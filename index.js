@@ -12,18 +12,19 @@ function createEmployeeRecord(employeeData) {
 }
 
 function createEmployeeRecords(employeesData) {
-    let employeesArr = [];
-    employeesData.forEach(employee => {
-        let employeeHash = {};
-        employeeHash.firstName = employee[0], 
-        employeeHash.familyName = employee[1],
-        employeeHash.title = employee[2],
-        employeeHash.payPerHour = employee[3], 
-        employeeHash.timeInEvents = [],
-        employeeHash.timeOutEvents= [];
-        employeesArr.push(employeeHash);
-    });
-    return employeesArr
+    return employeesData.map(employeedata => createEmployeeRecord(employeedata));
+    // let employeesArr = [];
+    // employeesData.forEach(employee => {
+    //     let employeeHash = {};
+    //     employeeHash.firstName = employee[0], 
+    //     employeeHash.familyName = employee[1],
+    //     employeeHash.title = employee[2],
+    //     employeeHash.payPerHour = employee[3], 
+    //     employeeHash.timeInEvents = [],
+    //     employeeHash.timeOutEvents= [];
+    //     employeesArr.push(employeeHash);
+    // });
+    // return employeesArr
 }
 
 function createTimeInEvent(record, date)  {
