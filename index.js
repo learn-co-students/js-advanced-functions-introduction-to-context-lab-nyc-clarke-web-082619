@@ -1,3 +1,5 @@
+import { stringify } from "querystring";
+
 // Your code here
 
 function createEmployeeRecord(arr){
@@ -64,16 +66,26 @@ function hoursWorkedOnDate(record, dateString){
     let clockIn = record.timeInEvents.filter((entry) => isSameDate(entry, dateString));
     let clockOut = record.timeOutEvents.filter((entry) => isSameDate(entry, dateString));
 
-    // console.log(`CLOCK IN : ${clockIn}`);
-    // console.log(`CLOCK OUT : ${clockOut}`);
+    let hoursArray = [];
 
-    let totalHours = 0;
+    for (let i = 0; i < 24; i++){
+        hoursArray[i] = 0;
+    }
 
 
     for (let i = 0; i < clockOut.length; i++){
-        totalHours += ((clockOut[i]['hour'] - clockIn[i]['hour'])/100);      
+        let clockInHour = (clockIn[i]['hour']/100);
+        let clockOutHour = (clockOut[i]['hour']/100);
+        // console.log(`${record.firstName} ${dateString} ${clockIn[i].hour} ${clockOut[i].hour}`);
+        //  let shiftLength = (clockOutHour - clockInHour); 
+        for (let j = clockInHour; j < clockOutHour; j++){
+            hoursArray[j] = 1;
+        }
     }
-    return totalHours;
+    // return totalHours;
+    return hoursArray.reduce(function(total, hour){
+        return total + hour
+    }, 0)
 }
 
 function isSameDate(clockEvent, dateString){
@@ -81,27 +93,39 @@ function isSameDate(clockEvent, dateString){
 }
 
 function wagesEarnedOnDate(record, dateString){
+ //   console.log(`${record.firstName} ${dateString} ${hoursWorkedOnDate(record, dateString)}hr  $${record.payPerHour}/hr`)
     return (hoursWorkedOnDate(record, dateString) * record.payPerHour)
 }
 
 function allWagesFor(record){
     let datesWorked = record.timeOutEvents.map((e) => {return e['date']});
-    console.log(`DATES WORKED: ${datesWorked}`);
+  //  console.log(`DATES WORKED: ${datesWorked}`);
     let uniqueDates = new Set(datesWorked);
 
     uniqueDates = [...uniqueDates];
 
 
-    return uniqueDates.reduce(function(total, dateString) {
+    let salary = uniqueDates.reduce(function(total, dateString) {
+ //       console.log(`${record.firstName} ${dateString} ${total + wagesEarnedOnDate(record, dateString)}`)
         return total + wagesEarnedOnDate(record, dateString);
     }, 0)
+
+ //   console.log(salary);
+    return salary
 }
 
 
 function calculatePayroll(recordArray){
-    return recordArray.reduce(function(total, record){
+    // console.log('CALCULATING PAYROLL !!!!!!!!!!!!!!')
+    // recordArray.forEach((record) => {
+    //     console.log(JSON.stringify(record))
+    //      console.log(`${record.firstName} ${allWagesFor(record)}`)
+    //     })
+    let payroll = recordArray.reduce(function(total, record){   
         return total + allWagesFor(record)
     }, 0)
+ //   console.log(`FINAL PAYROLL IS ${payroll}`);
+    return payroll
 }
 
 function findEmployeeByFirstName(srcArray, firstName){
